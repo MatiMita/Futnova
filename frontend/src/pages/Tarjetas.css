@@ -1,0 +1,15 @@
+.tarjetas-page { padding: 2rem; max-width: 900px; margin: 0 auto; }
+.tarjetas-page h1 { font-family: 'Bebas Neue','Impact',sans-serif; font-size: 2rem; color: #ffc800; letter-spacing: 2px; margin-bottom: 1.5rem; }
+.tarjetas-table-wrap { overflow-x: auto; }
+.tarjetas-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.tarjetas-table th { padding: 0.6rem 0.8rem; text-align: left; color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.tarjetas-table td { padding: 0.75rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: #d0d8e8; vertical-align: middle; }
+.tarjetas-table tr:hover td { background: rgba(255,255,255,0.03); }
+.pos-cell { color: #888; font-size: 0.85rem; text-align: center; }
+.jugador-info { display: flex; align-items: center; gap: 0.5rem; }
+.num-badge { padding: 0.1rem 0.4rem; background: rgba(255,255,255,0.08); border-radius: 4px; font-size: 0.72rem; color: #aaa; }
+.tarjeta-count { padding: 0.2rem 0.7rem; border-radius: 4px; font-weight: 700; font-size: 0.9rem; display: inline-block; }
+.tarjeta-count.amarilla { background: rgba(255,200,0,0.15); color: #ffc800; border: 1px solid rgba(255,200,0,0.3); }
+.tarjeta-count.roja { background: rgba(255,68,68,0.15); color: #ff4444; border: 1px solid rgba(255,68,68,0.3); }
+.puntos-count { font-weight: 700; color: #ff8080; }
+.empty-state { color: #666; text-align: center; padding: 3rem; }

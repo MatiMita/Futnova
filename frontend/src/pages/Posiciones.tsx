@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import api from '../api/axios';
 import { Posicion } from '../types';
+import { getPosiciones } from '../firebase/estadisticas';
 import './Posiciones.css';
 
 const Posiciones = () => {
@@ -13,8 +13,8 @@ const Posiciones = () => {
 
   const loadPosiciones = async () => {
     try {
-      const response = await api.get('/estadisticas/posiciones');
-      setPosiciones(response.data);
+      const data = await getPosiciones();
+      setPosiciones(data);
     } catch (error) {
       console.error('Error al cargar posiciones:', error);
     } finally {
@@ -46,20 +46,20 @@ const Posiciones = () => {
           </thead>
           <tbody>
             {posiciones.map((pos, index) => (
-              <tr key={pos.id}>
+              <tr key={pos.equipoId}>
                 <td className="pos-number">{index + 1}</td>
                 <td className="equipo-cell">
-                  {pos.logo_url && <img src={pos.logo_url} alt={pos.equipo_nombre} />}
-                  <span>{pos.equipo_nombre}</span>
+                  {pos.logo && <img src={pos.logo} alt={pos.equipoNombre} />}
+                  <span>{pos.equipoNombre}</span>
                 </td>
-                <td>{pos.partidos_jugados}</td>
-                <td>{pos.partidos_ganados}</td>
-                <td>{pos.partidos_empatados}</td>
-                <td>{pos.partidos_perdidos}</td>
-                <td>{pos.goles_favor}</td>
-                <td>{pos.goles_contra}</td>
-                <td className={pos.diferencia_goles >= 0 ? 'positive' : 'negative'}>
-                  {pos.diferencia_goles > 0 ? '+' : ''}{pos.diferencia_goles}
+                <td>{pos.partidosJugados}</td>
+                <td>{pos.partidosGanados}</td>
+                <td>{pos.partidosEmpatados}</td>
+                <td>{pos.partidosPerdidos}</td>
+                <td>{pos.golesFavor}</td>
+                <td>{pos.golesContra}</td>
+                <td className={pos.diferenciaGoles >= 0 ? 'positive' : 'negative'}>
+                  {pos.diferenciaGoles > 0 ? '+' : ''}{pos.diferenciaGoles}
                 </td>
                 <td className="puntos">{pos.puntos}</td>
               </tr>

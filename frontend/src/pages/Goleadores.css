@@ -1,0 +1,17 @@
+.goleadores-page { padding: 2rem; max-width: 900px; margin: 0 auto; }
+.goleadores-page h1 { font-family: 'Bebas Neue','Impact',sans-serif; font-size: 2rem; color: #00ff88; letter-spacing: 2px; margin-bottom: 1.5rem; }
+.goleadores-table-wrap { overflow-x: auto; }
+.goleadores-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.goleadores-table th { padding: 0.6rem 0.8rem; text-align: left; color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.goleadores-table td { padding: 0.75rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: #d0d8e8; vertical-align: middle; }
+.goleadores-table tr.top-1 td { background: rgba(255,215,0,0.06); }
+.goleadores-table tr.top-2 td { background: rgba(192,192,192,0.04); }
+.goleadores-table tr.top-3 td { background: rgba(205,127,50,0.04); }
+.goleadores-table tr:hover td { background: rgba(255,255,255,0.03); }
+.pos-cell { font-size: 1rem; text-align: center; }
+.jugador-info { display: flex; align-items: center; gap: 0.5rem; }
+.num-badge { padding: 0.1rem 0.4rem; background: rgba(255,255,255,0.08); border-radius: 4px; font-size: 0.72rem; color: #aaa; }
+.equipo-info { display: flex; align-items: center; gap: 0.5rem; }
+.equipo-info img { width: 24px; height: 24px; object-fit: cover; border-radius: 3px; }
+.goles-cell { font-family: 'Bebas Neue','Impact',sans-serif; font-size: 1.4rem; color: #00ff88; text-align: center; }
+.empty-state { color: #666; text-align: center; padding: 3rem; }

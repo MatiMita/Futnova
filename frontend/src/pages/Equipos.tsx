@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import api from '../api/axios';
 import { Equipo } from '../types';
+import { getEquipos, createEquipo, deleteEquipo } from '../firebase/equipos';
 import './Equipos.css';
 
 const Equipos = () => {
   const [equipos, setEquipos] = useState<Equipo[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({ nombre: '', logo_url: '' });
+  const [formData, setFormData] = useState({ nombre: '', logo: '' });
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -17,9 +17,8 @@ const Equipos = () => {
 
   const loadEquipos = async () => {
     try {
-      const response = await api.get('/equipos');
-      console.log('Equipos cargados:', response.data);
-      setEquipos(response.data);
+      const data = await getEquipos();
+      setEquipos(data);
     } catch (error) {
       console.error('Error al cargar equipos:', error);
       setMessage({ type: 'error', text: 'Error al cargar los equipos' });
@@ -32,35 +31,26 @@ const Equipos = () => {
     e.preventDefault();
     setSubmitting(true);
     setMessage(null);
-    
+
     try {
-      console.log('Enviando equipo:', formData);
-      const response = await api.post('/equipos', formData);
-      console.log('Respuesta del servidor:', response.data);
-      
+      await createEquipo({ nombre: formData.nombre, logo: formData.logo || undefined });
       setMessage({ type: 'success', text: `¡Equipo "${formData.nombre}" creado exitosamente!` });
-      setFormData({ nombre: '', logo_url: '' });
+      setFormData({ nombre: '', logo: '' });
       setShowForm(false);
       await loadEquipos();
-      
-      // Limpiar mensaje después de 3 segundos
       setTimeout(() => setMessage(null), 3000);
-    } catch (error: any) {
-      console.error('Error completo:', error);
-      console.error('Error response:', error.response?.data);
-      setMessage({ 
-        type: 'error', 
-        text: error.response?.data?.error || 'Error al crear el equipo. Por favor intenta de nuevo.' 
-      });
+    } catch (error) {
+      console.error('Error al crear equipo:', error);
+      setMessage({ type: 'error', text: 'Error al crear el equipo. Por favor intenta de nuevo.' });
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm('¿Estás seguro de eliminar este equipo?')) {
       try {
-        await api.delete(`/equipos/${id}`);
+        await deleteEquipo(id);
         setMessage({ type: 'success', text: 'Equipo eliminado exitosamente' });
         await loadEquipos();
         setTimeout(() => setMessage(null), 3000);
@@ -102,8 +92,8 @@ const Equipos = () => {
           <input
             type="text"
             placeholder="URL del logo (opcional)"
-            value={formData.logo_url}
-            onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
+            value={formData.logo}
+            onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
             disabled={submitting}
           />
           <button type="submit" className="btn-primary" disabled={submitting}>
@@ -116,7 +106,7 @@ const Equipos = () => {
         {equipos.map((equipo) => (
           <div key={equipo.id} className="equipo-card">
             <div className="equipo-header">
-              {equipo.logo_url && <img src={equipo.logo_url} alt={equipo.nombre} />}
+              {equipo.logo && <img src={equipo.logo} alt={equipo.nombre} />}
               <h3>{equipo.nombre}</h3>
             </div>
             <button onClick={() => handleDelete(equipo.id)} className="btn-delete">

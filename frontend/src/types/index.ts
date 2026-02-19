@@ -1,50 +1,103 @@
-export interface Equipo {
-  id: number;
+export type Rol = 'admin' | 'capitan' | 'visitante';
+
+export interface Usuario {
+  id: string;
+  email: string;
   nombre: string;
-  logo_url?: string;
-  fecha_creacion: string;
+  rol: Rol;
+  equipoId?: string; // solo para capitanes
+  creadoEn?: unknown;
+}
+
+export interface Equipo {
+  id: string;
+  nombre: string;
+  logo?: string;
+  grupo?: string;
+  fechaCreacion?: unknown;
 }
 
 export interface Jugador {
-  id: number;
+  id: string;
   nombre: string;
   apellido: string;
-  numero_camiseta?: number;
+  numeroCamiseta?: number;
   posicion?: string;
-  equipo_id: number;
-  equipo_nombre?: string;
+  equipoId: string;
+  equipoNombre?: string;
   goles: number;
-  tarjetas_amarillas: number;
-  tarjetas_rojas: number;
-  fecha_registro: string;
+  tarjetasAmarillas: number;
+  tarjetasRojas: number;
+  fechaRegistro?: unknown;
 }
 
 export interface Partido {
-  id: number;
-  equipo_local_id: number;
-  equipo_visitante_id: number;
-  equipo_local?: string;
-  equipo_visitante?: string;
-  goles_local: number;
-  goles_visitante: number;
+  id: string;
+  equipoLocalId: string;
+  equipoVisitanteId: string;
+  equipoLocalNombre?: string;
+  equipoVisitanteNombre?: string;
+  golesLocal: number;
+  golesVisitante: number;
   fecha: string;
   jornada: number;
   finalizado: boolean;
-  fecha_creacion: string;
+  fechaCreacion?: unknown;
 }
 
 export interface Posicion {
-  id: number;
-  equipo_id: number;
-  equipo_nombre: string;
-  logo_url?: string;
-  partidos_jugados: number;
-  partidos_ganados: number;
-  partidos_empatados: number;
-  partidos_perdidos: number;
-  goles_favor: number;
-  goles_contra: number;
-  diferencia_goles: number;
+  equipoId: string;
+  equipoNombre: string;
+  logo?: string;
+  grupo?: string;
+  partidosJugados: number;
+  partidosGanados: number;
+  partidosEmpatados: number;
+  partidosPerdidos: number;
+  golesFavor: number;
+  golesContra: number;
+  diferenciaGoles: number;
   puntos: number;
-  ultima_actualizacion: string;
+}
+
+export interface Jugador {
+  id: string;
+  nombre: string;
+  apellido: string;
+  numeroCamiseta?: number;
+  posicion?: string;
+  equipoId: string;
+  equipoNombre?: string;
+  goles: number;
+  tarjetasAmarillas: number;
+  tarjetasRojas: number;
+  fechaRegistro?: unknown;
+}
+
+export interface Partido {
+  id: string;
+  equipoLocalId: string;
+  equipoVisitanteId: string;
+  equipoLocalNombre?: string;
+  equipoVisitanteNombre?: string;
+  golesLocal: number;
+  golesVisitante: number;
+  fecha: string;
+  jornada: number;
+  finalizado: boolean;
+  fechaCreacion?: unknown;
+}
+
+export interface Posicion {
+  equipoId: string;
+  equipoNombre: string;
+  logo?: string;
+  partidosJugados: number;
+  partidosGanados: number;
+  partidosEmpatados: number;
+  partidosPerdidos: number;
+  golesFavor: number;
+  golesContra: number;
+  diferenciaGoles: number;
+  puntos: number;
 }

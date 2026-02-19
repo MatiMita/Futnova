@@ -1,0 +1,314 @@
+.mi-equipo-page {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem 4rem;
+}
+
+/* Header */
+.equipo-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 1px solid #00ff88;
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.equipo-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #00ff88;
+}
+
+.equipo-header h1 {
+  font-size: 1.8rem;
+  color: #00ff88;
+  margin: 0 0 0.4rem;
+}
+
+.grupo-badge {
+  background: rgba(0, 255, 136, 0.15);
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  padding: 0.2rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.capitan-label {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin: 0.4rem 0 0;
+}
+
+/* Stats rápidas */
+.equipo-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+
+.stat-card:hover {
+  border-color: #00ff88;
+}
+
+.stat-num {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #00ff88;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+/* Formulario */
+.jugador-form-section {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.jugador-form-section h2 {
+  color: #e0e0e0;
+  font-size: 1.1rem;
+  margin: 0 0 1rem;
+}
+
+.jugador-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.jugador-form input,
+.jugador-form select {
+  flex: 1;
+  min-width: 140px;
+  background: #0d0d1a;
+  border: 1px solid #3a3a5a;
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.jugador-form input:focus,
+.jugador-form select:focus {
+  border-color: #00ff88;
+}
+
+.jugador-form input::placeholder {
+  color: #555;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: #00ff88;
+  color: #0d0d1a;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:hover {
+  opacity: 0.85;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #888;
+  border: 1px solid #3a3a5a;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.btn-secondary:hover {
+  color: #e0e0e0;
+  border-color: #666;
+}
+
+.form-msg {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 8px;
+  color: #00ff88;
+  font-size: 0.9rem;
+}
+
+/* Plantilla */
+.jugadores-section h2 {
+  color: #e0e0e0;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.jugadores-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.jugador-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  transition: border-color 0.2s;
+}
+
+.jugador-card:hover {
+  border-color: #3a3a5a;
+}
+
+.jugador-numero {
+  width: 36px;
+  height: 36px;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.25);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #00ff88;
+  flex-shrink: 0;
+}
+
+.jugador-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.jugador-nombre {
+  font-weight: 600;
+  color: #e0e0e0;
+  font-size: 0.95rem;
+}
+
+.jugador-posicion {
+  font-size: 0.78rem;
+  color: #888;
+}
+
+.jugador-stats-mini {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+  color: #aaa;
+}
+
+.jugador-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.btn-edit-sm {
+  background: rgba(0, 120, 255, 0.15);
+  color: #4da6ff;
+  border: 1px solid rgba(77, 166, 255, 0.3);
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-edit-sm:hover {
+  background: rgba(0, 120, 255, 0.3);
+}
+
+.btn-delete-sm {
+  background: rgba(255, 60, 60, 0.1);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-delete-sm:hover {
+  background: rgba(255, 60, 60, 0.25);
+}
+
+/* Sin equipo */
+.no-equipo-msg {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #888;
+}
+
+.no-equipo-msg span {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+/* Textos de estado */
+.loading-text,
+.empty-text {
+  color: #888;
+  font-size: 0.95rem;
+  padding: 1rem 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .equipo-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .equipo-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .jugador-stats-mini {
+    display: none;
+  }
+}

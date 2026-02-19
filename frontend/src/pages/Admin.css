@@ -1,5 +1,297 @@
-/* Login Page */
-.admin-login {
+/* Admin Dashboard */
+.admin-dashboard {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.admin-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.admin-header h1 {
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  font-size: 2rem;
+  color: #00ff88;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.admin-subtitle {
+  color: #666;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Tabs */
+.admin-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 0;
+}
+
+.admin-tab {
+  padding: 0.65rem 1.4rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #888;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: -1px;
+}
+
+.admin-tab:hover { color: #ccc; }
+.admin-tab.active { color: #00ff88; border-bottom-color: #00ff88; }
+
+/* Section */
+.admin-section { padding: 0.5rem 0; }
+
+/* Form */
+.admin-form {
+  background: rgba(15, 20, 50, 0.6);
+  border: 1px solid rgba(0, 255, 136, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-form h3 {
+  color: #00ff88;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 1rem 0;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.form-row input,
+.form-row select {
+  flex: 1;
+  min-width: 160px;
+  padding: 0.65rem 0.9rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #f0f4f8;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-row input:focus, .form-row select:focus { border-color: rgba(0,255,136,0.5); }
+.form-row select option { background: #0f1432; }
+
+.form-actions { display: flex; gap: 0.5rem; }
+
+.btn-primary {
+  padding: 0.6rem 1.4rem;
+  background: linear-gradient(135deg, #00ff88, #00cc6a);
+  border: none;
+  border-radius: 8px;
+  color: #0a0e27;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,255,136,0.35); }
+
+.btn-secondary {
+  padding: 0.6rem 1.2rem;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  color: #aaa;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: #fff; color: #fff; }
+
+.btn-edit {
+  padding: 0.3rem 0.7rem;
+  background: rgba(0, 180, 255, 0.12);
+  border: 1px solid rgba(0, 180, 255, 0.3);
+  border-radius: 6px;
+  color: #00b4ff;
+  font-size: 0.78rem;
+  cursor: pointer;
+  margin-right: 0.4rem;
+  transition: all 0.2s;
+}
+.btn-edit:hover { background: rgba(0,180,255,0.25); }
+
+.btn-delete {
+  padding: 0.3rem 0.7rem;
+  background: rgba(255, 80, 80, 0.1);
+  border: 1px solid rgba(255,80,80,0.3);
+  border-radius: 6px;
+  color: #ff8080;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-delete:hover { background: rgba(255,80,80,0.2); }
+
+/* Msg */
+.admin-msg {
+  padding: 0.6rem 1rem;
+  background: rgba(0,255,136,0.1);
+  border: 1px solid rgba(0,255,136,0.3);
+  border-radius: 8px;
+  color: #00ff88;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+/* Table */
+.admin-table-wrap { overflow-x: auto; }
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.admin-table th {
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  color: #888;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.admin-table td {
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: #d0d8e8;
+  vertical-align: middle;
+}
+
+.admin-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+.grupo-badge {
+  padding: 0.2rem 0.5rem;
+  background: rgba(0,255,136,0.1);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #00ff88;
+}
+
+/* Stats controls */
+.stat-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stat-ctrl button {
+  width: 22px;
+  height: 22px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  transition: background 0.15s;
+}
+.stat-ctrl button:hover { background: rgba(255,255,255,0.15); }
+.stat-ctrl span { min-width: 20px; text-align: center; font-weight: 600; }
+
+/* Partidos list */
+.partidos-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.partido-admin-card {
+  background: rgba(15, 20, 50, 0.5);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  transition: border-color 0.2s;
+}
+.partido-admin-card.finalizado { border-color: rgba(0,255,136,0.2); }
+
+.partido-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: #d0d8e8;
+}
+
+.jornada-badge {
+  padding: 0.2rem 0.5rem;
+  background: rgba(255,200,0,0.12);
+  border: 1px solid rgba(255,200,0,0.25);
+  border-radius: 4px;
+  color: #ffc800;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.vs { color: #666; font-size: 0.8rem; }
+
+.fecha-text { color: #666; font-size: 0.8rem; }
+
+.fin-badge {
+  padding: 0.15rem 0.5rem;
+  background: rgba(0,255,136,0.1);
+  border-radius: 4px;
+  color: #00ff88;
+  font-size: 0.75rem;
+}
+
+.resultado-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.resultado-ctrl input {
+  padding: 0.3rem 0.4rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  color: #f0f4f8;
+  text-align: center;
+  outline: none;
+}
+
+@media (max-width: 768px) {
+  .admin-tabs { flex-wrap: wrap; }
+  .form-row input, .form-row select { min-width: 100%; }
+  .partido-admin-card { flex-direction: column; align-items: flex-start; }
+}
+
   min-height: 100vh;
   display: flex;
   align-items: center;

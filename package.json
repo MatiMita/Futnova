@@ -1,0 +1,13 @@
+{
+  "name": "futnova",
+  "version": "1.0.0",
+  "description": "FutNova - Aplicación de Torneo de Fútbol",
+  "scripts": {
+    "setup": "npm install --prefix frontend",
+    "dev": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

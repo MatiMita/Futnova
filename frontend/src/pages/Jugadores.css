@@ -1,0 +1,28 @@
+.jugadores-page { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.page-header h1 { font-family: 'Bebas Neue', 'Impact', sans-serif; font-size: 2rem; color: #00ff88; letter-spacing: 2px; margin: 0; }
+.filtros { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.filtros select { padding: 0.5rem 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #f0f4f8; outline: none; }
+.filtros select option { background: #0f1432; }
+.jugador-form { background: rgba(15,20,50,0.6); border: 1px solid rgba(0,255,136,0.15); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.jugador-form h3 { color: #00ff88; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 1rem; }
+.form-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
+.form-row input, .form-row select { flex: 1; min-width: 150px; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #f0f4f8; font-size: 0.9rem; outline: none; }
+.form-row input:focus, .form-row select:focus { border-color: rgba(0,255,136,0.5); }
+.btn-primary { padding: 0.6rem 1.4rem; background: linear-gradient(135deg, #00ff88, #00cc6a); border: none; border-radius: 8px; color: #0a0e27; font-weight: 700; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,255,136,0.35); }
+.page-msg { padding: 0.6rem 1rem; background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 8px; color: #00ff88; font-size: 0.85rem; margin-bottom: 1rem; }
+.jugadores-table-wrap { overflow-x: auto; }
+.jugadores-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.jugadores-table th { padding: 0.6rem 0.8rem; text-align: left; color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.jugadores-table td { padding: 0.7rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: #d0d8e8; vertical-align: middle; }
+.jugadores-table tr:hover td { background: rgba(255,255,255,0.03); }
+.num-cell { color: #888; font-size: 0.8rem; }
+.pos-badge { padding: 0.15rem 0.5rem; background: rgba(255,255,255,0.07); border-radius: 4px; font-size: 0.75rem; color: #aaa; }
+.stat-cell { text-align: center; font-weight: 700; }
+.stat-cell.goles { color: #00ff88; }
+.stat-cell.amarillas { color: #ffc800; }
+.stat-cell.rojas { color: #ff4444; }
+.btn-edit-sm, .btn-del-sm { background: transparent; border: none; cursor: pointer; font-size: 1rem; padding: 0.2rem; transition: transform 0.15s; }
+.btn-edit-sm:hover, .btn-del-sm:hover { transform: scale(1.2); }
+.empty-state { color: #666; text-align: center; padding: 3rem; }

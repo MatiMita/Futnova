@@ -1,0 +1,78 @@
+import {
+  collection,
+  getDocs,
+  getDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  serverTimestamp,
+  query,
+  where,
+  orderBy,
+} from 'firebase/firestore';
+import { db } from './config';
+import { Jugador } from '../types';
+
+const COLLECTION = 'jugadores';
+
+export const getJugadores = async (): Promise<Jugador[]> => {
+  const q = query(collection(db, COLLECTION), orderBy('apellido'));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Jugador));
+};
+
+export const getJugadoresByEquipo = async (equipoId: string): Promise<Jugador[]> => {
+  const q = query(
+    collection(db, COLLECTION),
+    where('equipoId', '==', equipoId),
+    orderBy('numeroCamiseta')
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Jugador));
+};
+
+export const getJugador = async (id: string): Promise<Jugador | null> => {
+  const snap = await getDoc(doc(db, COLLECTION, id));
+  if (!snap.exists()) return null;
+  return { id: snap.id, ...snap.data() } as Jugador;
+};
+
+export const createJugador = async (data: Omit<Jugador, 'id' | 'fechaRegistro'>): Promise<Jugador> => {
+  const payload = {
+    ...data,
+    goles: 0,
+    tarjetasAmarillas: 0,
+    tarjetasRojas: 0,
+    fechaRegistro: serverTimestamp(),
+  };
+  const ref = await addDoc(collection(db, COLLECTION), payload);
+  return { id: ref.id, ...payload } as unknown as Jugador;
+};
+
+export const updateJugador = async (id: string, data: Partial<Jugador>): Promise<void> => {
+  await updateDoc(doc(db, COLLECTION, id), { ...data });
+};
+
+export const deleteJugador = async (id: string): Promise<void> => {
+  await deleteDoc(doc(db, COLLECTION, id));
+};
+
+export const getGoleadores = async (): Promise<Jugador[]> => {
+  const jugadores = await getJugadores();
+  return jugadores
+    .filter((j) => j.goles > 0)
+    .sort((a, b) => b.goles - a.goles)
+    .slice(0, 10);
+};
+
+export const getTablaTargetas = async (): Promise<Jugador[]> => {
+  const jugadores = await getJugadores();
+  return jugadores
+    .filter((j) => j.tarjetasAmarillas > 0 || j.tarjetasRojas > 0)
+    .sort(
+      (a, b) =>
+        b.tarjetasRojas * 2 + b.tarjetasAmarillas - (a.tarjetasRojas * 2 + a.tarjetasAmarillas)
+    )
+    .slice(0, 10);
+};
