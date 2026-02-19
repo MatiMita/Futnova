@@ -10,7 +10,7 @@ const Home = () => {
         <div className="hero-content">
           <div className="tournament-flag">⚽</div>
           <h1>NovaCup 2026</h1>
-          <p className="hero-subtitle">TEMPORADA 2026 • TORNEO OFICIAL xd</p>
+          <p className="hero-subtitle">TEMPORADA 2026 • TORNEO OFICIAL</p>
           
           <div className="tournament-logo">
             <img src={logo} alt="NovaCup" className="logo-image" />
