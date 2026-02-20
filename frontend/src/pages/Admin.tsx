@@ -128,7 +128,7 @@ const Admin = () => {
   return (
     <div className="admin-dashboard">
       <div className="admin-header">
-        <h1>⚙️ Panel de Administración</h1>
+        <h1>Panel de Administración</h1>
         <span className="admin-subtitle">NovaCup 2026</span>
       </div>
 

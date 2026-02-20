@@ -204,7 +204,7 @@
   box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4);
 }
 
-.btn-primary::before {
+.home .btn-primary::before {
   content: '';
   position: absolute;
   top: 0;
@@ -215,7 +215,7 @@
   transition: left 0.5s ease;
 }
 
-.btn-primary:hover::before {
+.home .btn-primary:hover::before {
   left: 100%;
 }
 

@@ -10,7 +10,7 @@
 }
 
 .navbar-container {
-  max-width: 1400px;
+  max-width: 1650px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -157,8 +157,8 @@
 .btn-logout {
   padding: 0.35rem 0.8rem;
   background: transparent;
-  border: 1px solid rgba(255, 80, 80, 0.4);
-  color: #ff8080;
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  color: #00ff88;
   border-radius: 6px;
   font-size: 0.8rem;
   cursor: pointer;
@@ -166,6 +166,6 @@
 }
 
 .btn-logout:hover {
-  background: rgba(255, 80, 80, 0.15);
-  border-color: #ff8080;
+  background: rgba(0, 255, 136, 0.15);
+  border-color: #00ff88;
 }

@@ -5,9 +5,9 @@ import { logout } from '../firebase/auth';
 import './Navbar.css';
 
 const ROL_LABEL: Record<string, string> = {
-  admin: '⚙️ Admin',
-  capitan: '🦺 Capitán',
-  visitante: '👤 Usuario',
+  admin: 'Admin',
+  capitan: 'Capitán',
+  visitante: 'Usuario',
 };
 
 const Navbar = () => {
@@ -27,7 +27,6 @@ const Navbar = () => {
           <span>FutNova</span>
         </Link>
         <ul className="navbar-menu">
-          <li><Link to="/">Inicio</Link></li>
           <li><Link to="/equipos">Equipos</Link></li>
           <li><Link to="/jugadores">Jugadores</Link></li>
           <li><Link to="/partidos">Partidos</Link></li>
@@ -45,7 +44,7 @@ const Navbar = () => {
                 {ROL_LABEL[perfil.rol]}
               </span>
               <span className="user-name">{perfil.nombre}</span>
-              <button className="btn-logout" onClick={handleLogout}>Salir</button>
+              <button className="btn-logout" onClick={handleLogout}>Log Out</button>
             </div>
           ) : (
             <Link to="/login" className="btn-navbar-login">Iniciar Sesión</Link>
