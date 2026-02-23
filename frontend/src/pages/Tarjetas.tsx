@@ -23,7 +23,7 @@ const Tarjetas = () => {
 
   return (
     <div className="tarjetas-page">
-      <h1>🟡 Tabla de Amonestaciones</h1>
+      <h1> Tabla de Amonestaciones</h1>
 
       {jugadores.length === 0 ? (
         <p className="empty-state">Aún no hay tarjetas registradas</p>

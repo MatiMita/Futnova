@@ -5,6 +5,7 @@ import { getEquipos, createEquipo, deleteEquipo, updateEquipo } from '../firebas
 import { getJugadores, createJugador, updateJugador, deleteJugador } from '../firebase/jugadores';
 import { getPartidos, createPartido, updateResultado, deletePartido } from '../firebase/partidos';
 import { crearUsuario } from '../firebase/auth';
+import { subirLogoEquipo } from '../firebase/storage';
 import { Equipo, Jugador, Partido } from '../types';
 import './Admin.css';
 
@@ -22,6 +23,8 @@ const Admin = () => {
   const [partidos, setPartidos] = useState<Partido[]>([]);
 
   const [equipoForm, setEquipoForm] = useState({ nombre: '', logo: '', grupo: '' });
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [editEquipoId, setEditEquipoId] = useState<string | null>(null);
   const [equipoMsg, setEquipoMsg] = useState('');
 
@@ -53,18 +56,33 @@ const Admin = () => {
   // ---- EQUIPOS ----
   const submitEquipo = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editEquipoId) {
-      await updateEquipo(editEquipoId, { nombre: equipoForm.nombre, logo: equipoForm.logo || undefined, grupo: equipoForm.grupo || undefined });
-      flash(setEquipoMsg, '✅ Equipo actualizado');
-      setEditEquipoId(null);
-    } else {
-      await createEquipo({ nombre: equipoForm.nombre, logo: equipoForm.logo || undefined, grupo: equipoForm.grupo || undefined });
-      flash(setEquipoMsg, '✅ Equipo creado');
+    try {
+      setUploadingLogo(true);
+      let logoURL = equipoForm.logo;
+      
+      // Si se seleccionó un archivo, convertirlo a Base64
+      if (logoFile) {
+        logoURL = await subirLogoEquipo(logoFile);
+      }
+      
+      if (editEquipoId) {
+        await updateEquipo(editEquipoId, { nombre: equipoForm.nombre, logo: logoURL || undefined, grupo: equipoForm.grupo || undefined });
+        flash(setEquipoMsg, ' Equipo actualizado');
+        setEditEquipoId(null);
+      } else {
+        await createEquipo({ nombre: equipoForm.nombre, logo: logoURL || undefined, grupo: equipoForm.grupo || undefined });
+        flash(setEquipoMsg, ' Equipo creado');
+      }
+      setEquipoForm({ nombre: '', logo: '', grupo: '' });
+      setLogoFile(null);
+      loadAll();
+    } catch (error: any) {
+      flash(setEquipoMsg, `❌ ${error.message || 'Error al procesar el logo'}`);
+    } finally {
+      setUploadingLogo(false);
     }
-    setEquipoForm({ nombre: '', logo: '', grupo: '' });
-    loadAll();
   };
-  const startEditEquipo = (eq: Equipo) => { setEditEquipoId(eq.id); setEquipoForm({ nombre: eq.nombre, logo: eq.logo || '', grupo: eq.grupo || '' }); };
+  const startEditEquipo = (eq: Equipo) => { setEditEquipoId(eq.id); setEquipoForm({ nombre: eq.nombre, logo: eq.logo || '', grupo: eq.grupo || '' }); setLogoFile(null); };
   const removeEquipo = async (id: string) => { if (!confirm('¿Eliminar equipo?')) return; await deleteEquipo(id); flash(setEquipoMsg, '🗑 Eliminado'); loadAll(); };
 
   // ---- JUGADORES ----
@@ -73,11 +91,11 @@ const Admin = () => {
     const data = { nombre: jugadorForm.nombre, apellido: jugadorForm.apellido, equipoId: jugadorForm.equipoId, numeroCamiseta: jugadorForm.numeroCamiseta ? Number(jugadorForm.numeroCamiseta) : undefined, posicion: jugadorForm.posicion || undefined, goles: 0, tarjetasAmarillas: 0, tarjetasRojas: 0 };
     if (editJugadorId) {
       await updateJugador(editJugadorId, data);
-      flash(setJugadorMsg, '✅ Jugador actualizado');
+      flash(setJugadorMsg, ' Jugador actualizado');
       setEditJugadorId(null);
     } else {
       await createJugador(data);
-      flash(setJugadorMsg, '✅ Jugador creado');
+      flash(setJugadorMsg, ' Jugador creado');
     }
     setJugadorForm({ nombre: '', apellido: '', equipoId: '', numeroCamiseta: '', posicion: '' });
     loadAll();
@@ -95,7 +113,7 @@ const Admin = () => {
   const submitPartido = async (e: React.FormEvent) => {
     e.preventDefault();
     await createPartido({ equipoLocalId: partidoForm.equipoLocalId, equipoVisitanteId: partidoForm.equipoVisitanteId, fecha: partidoForm.fecha, jornada: Number(partidoForm.jornada) });
-    flash(setPartidoMsg, '✅ Partido creado');
+    flash(setPartidoMsg, ' Partido creado');
     setPartidoForm({ equipoLocalId: '', equipoVisitanteId: '', fecha: '', jornada: '' });
     loadAll();
   };
@@ -103,7 +121,7 @@ const Admin = () => {
     const r = resultadoForm[partidoId];
     if (!r) return;
     await updateResultado(partidoId, Number(r.golesLocal), Number(r.golesVisitante), r.finalizado);
-    flash(setPartidoMsg, '✅ Resultado guardado');
+    flash(setPartidoMsg, ' Resultado guardado');
     loadAll();
   };
   const removePartido = async (id: string) => { if (!confirm('¿Eliminar partido?')) return; await deletePartido(id); flash(setPartidoMsg, '🗑 Eliminado'); loadAll(); };
@@ -113,7 +131,7 @@ const Admin = () => {
     e.preventDefault();
     try {
       await crearUsuario(usuarioForm.email, usuarioForm.password, usuarioForm.nombre, 'capitan', usuarioForm.equipoId || undefined);
-      flash(setUsuarioMsg, '✅ Capitán creado');
+      flash(setUsuarioMsg, ' Capitán creado');
       setUsuarioForm({ email: '', password: '', nombre: '', equipoId: '' });
     } catch {
       flash(setUsuarioMsg, '❌ Error: el email ya puede estar en uso');
@@ -135,7 +153,7 @@ const Admin = () => {
       <div className="admin-tabs">
         {(['equipos', 'jugadores', 'partidos', 'usuarios'] as Tab[]).map((t) => (
           <button key={t} className={`admin-tab ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
-            {{ equipos: '🏆 Equipos', jugadores: '👥 Jugadores', partidos: '⚽ Partidos', usuarios: '🔑 Capitanes' }[t]}
+            {{ equipos: ' Equipos', jugadores: ' Jugadores', partidos: ' Partidos', usuarios: ' Capitanes' }[t]}
           </button>
         ))}
       </div>
@@ -147,15 +165,45 @@ const Admin = () => {
             <h3>{editEquipoId ? 'Editar Equipo' : 'Nuevo Equipo'}</h3>
             <div className="form-row">
               <input placeholder="Nombre del equipo *" value={equipoForm.nombre} onChange={(e) => setEquipoForm({ ...equipoForm, nombre: e.target.value })} required />
-              <input placeholder="URL del logo" value={equipoForm.logo} onChange={(e) => setEquipoForm({ ...equipoForm, logo: e.target.value })} />
               <select value={equipoForm.grupo} onChange={(e) => setEquipoForm({ ...equipoForm, grupo: e.target.value })}>
                 <option value="">Sin grupo</option>
                 {GRUPOS.map((g) => <option key={g} value={g}>{g}</option>)}
               </select>
             </div>
+            <div className="form-row">
+              <div style={{ flex: 1 }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
+                  📤 Subir logo desde tu computador <span style={{ fontSize: '0.8rem', color: '#999' }}>(máx. 500KB)</span>
+                </label>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setLogoFile(file);
+                      setEquipoForm({ ...equipoForm, logo: '' }); // Limpiar URL si se selecciona archivo
+                    }
+                  }} 
+                />
+                {logoFile && <span style={{ fontSize: '0.85rem', color: '#4caf50', marginLeft: '0.5rem' }}>✓ {logoFile.name}</span>}
+              </div>
+            </div>
+            <div className="form-row">
+              <input 
+                placeholder="O pega la URL del logo" 
+                value={equipoForm.logo} 
+                onChange={(e) => {
+                  setEquipoForm({ ...equipoForm, logo: e.target.value });
+                  if (e.target.value) setLogoFile(null); // Limpiar archivo si se ingresa URL
+                }} 
+              />
+            </div>
             <div className="form-actions">
-              <button type="submit" className="btn-primary">{editEquipoId ? 'Actualizar' : 'Crear'}</button>
-              {editEquipoId && <button type="button" className="btn-secondary" onClick={() => { setEditEquipoId(null); setEquipoForm({ nombre: '', logo: '', grupo: '' }); }}>Cancelar</button>}
+              <button type="submit" className="btn-primary" disabled={uploadingLogo}>
+                {uploadingLogo ? 'Subiendo...' : editEquipoId ? 'Actualizar' : 'Crear'}
+              </button>
+              {editEquipoId && <button type="button" className="btn-secondary" onClick={() => { setEditEquipoId(null); setEquipoForm({ nombre: '', logo: '', grupo: '' }); setLogoFile(null); }}>Cancelar</button>}
             </div>
           </form>
           {equipoMsg && <div className="admin-msg">{equipoMsg}</div>}

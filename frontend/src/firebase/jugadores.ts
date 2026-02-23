@@ -23,13 +23,18 @@ export const getJugadores = async (): Promise<Jugador[]> => {
 };
 
 export const getJugadoresByEquipo = async (equipoId: string): Promise<Jugador[]> => {
+  console.log('🔍 Buscando jugadores para equipoId:', equipoId);
   const q = query(
     collection(db, COLLECTION),
-    where('equipoId', '==', equipoId),
-    orderBy('numeroCamiseta')
+    where('equipoId', '==', equipoId)
   );
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Jugador));
+  console.log('📦 Documentos encontrados:', snapshot.size);
+  const jugadores = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Jugador));
+  // Ordenar manualmente por numeroCamiseta (permite undefined)
+  jugadores.sort((a, b) => (a.numeroCamiseta || 999) - (b.numeroCamiseta || 999));
+  console.log('✅ Jugadores procesados:', jugadores);
+  return jugadores;
 };
 
 export const getJugador = async (id: string): Promise<Jugador | null> => {

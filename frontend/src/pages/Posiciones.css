@@ -103,6 +103,26 @@
   padding: 0.5rem;
 }
 
+.grupos-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.grupo-container {
+  width: 100%;
+}
+
+.grupo-title {
+  color: #1a1a2e;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+  border-left: 5px solid #4ecca3;
+  display: inline-block;
+}
+
 .loading {
   text-align: center;
   padding: 4rem;

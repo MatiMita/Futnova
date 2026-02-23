@@ -17,6 +17,7 @@ export const getPosiciones = async (): Promise<Posicion[]> => {
       equipoId: equipo.id,
       equipoNombre: equipo.nombre,
       logo: equipo.logo,
+      grupo: equipo.grupo,
       partidosJugados: 0,
       partidosGanados: 0,
       partidosEmpatados: 0,

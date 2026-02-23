@@ -21,13 +21,13 @@ const POSICIONES_LIST = Object.keys(CUPO);
 const TOTAL_RECOMENDADO = Object.values(CUPO).reduce((a, b) => a + b, 0);
 
 const POS_ICON: Record<string, string> = {
-  Portero: '🥅',
-  Defensa: '🛡️',
-  Lateral: '↔️',
-  Centrocampista: '⚙️',
-  Mediapunta: '🎯',
-  Extremo: '⚡',
-  Delantero: '⚽',
+  Portero: '',
+  Defensa: '',
+  Lateral: '',
+  Centrocampista: '',
+  Mediapunta: '',
+  Extremo: '',
+  Delantero: '',
 };
 
 const MiEquipo = () => {
@@ -44,8 +44,11 @@ const MiEquipo = () => {
 
   const loadData = async () => {
     if (!perfil?.equipoId) return;
+    console.log('🔍 Cargando datos para equipoId:', perfil.equipoId);
     setLoadingData(true);
     const [equiposList, jugList] = await Promise.all([getEquipos(), getJugadoresByEquipo(perfil.equipoId)]);
+    console.log('Jugadores obtenidos:', jugList);
+    console.log('Cantidad de jugadores:', jugList.length);
     setEquipo(equiposList.find((e) => e.id === perfil.equipoId) || null);
     setJugadores(jugList);
     setLoadingData(false);
@@ -80,10 +83,10 @@ const MiEquipo = () => {
     };
     if (editId) {
       await updateJugador(editId, { nombre: data.nombre, apellido: data.apellido, numeroCamiseta: data.numeroCamiseta, posicion: data.posicion });
-      flash('✅ Jugador actualizado');
+      flash(' Jugador actualizado');
     } else {
       await createJugador(data);
-      flash('✅ Jugador añadido a la plantilla');
+      flash('Jugador añadido a la plantilla');
     }
     cancelForm();
     loadData();
@@ -131,45 +134,87 @@ const MiEquipo = () => {
       </div>
 
       {/* Progreso de plantilla */}
-      {!loadingData && (
-        <div className="plantilla-progreso">
-          <div className="progreso-header">
-            <span className="progreso-titulo">Plantilla completa</span>
-            <span className="progreso-nums">{jugadores.length} <span className="progreso-total">/ {TOTAL_RECOMENDADO} recomendados</span></span>
-          </div>
-          <div className="progreso-bar-wrap">
-            <div className="progreso-bar" style={{ width: `${progreso}%` }} />
-          </div>
-          <div className="progreso-detail">
-            <span>{jugadores.length >= 11 ? '✅ Tienes el mínimo de 11 jugadores' : `⚠️ Faltan ${11 - jugadores.length} para el mínimo de 11`}</span>
-            {sinPosicion > 0 && <span className="warn-badge">⚠️ {sinPosicion} sin posición asignada</span>}
-          </div>
+      <div className="plantilla-progreso">
+        <div className="progreso-header">
+          <span className="progreso-titulo">Plantilla completa</span>
+          <span className="progreso-nums">{jugadores.length} <span className="progreso-total">/ {TOTAL_RECOMENDADO} recomendados</span></span>
         </div>
-      )}
+        <div className="progreso-bar-wrap">
+          <div className="progreso-bar" style={{ width: `${progreso}%` }} />
+        </div>
+        <div className="progreso-detail">
+          <span>{jugadores.length >= 11 ? ' Tienes el mínimo de 11 jugadores' : ` Faltan ${11 - jugadores.length} para el mínimo de 11`}</span>
+          {sinPosicion > 0 && <span className="warn-badge">⚠️ {sinPosicion} sin posición asignada</span>}
+        </div>
+      </div>
 
-      {/* Grid posiciones */}
-      {!loadingData && (
-        <div className="posiciones-grid">
-          {POSICIONES_LIST.map((pos) => {
-            const tiene = conteo[pos];
-            const necesita = CUPO[pos];
-            const completo = tiene >= necesita;
-            return (
-              <div key={pos} className={`pos-slot ${completo ? 'completo' : 'falta'}`} onClick={() => openForm(pos)}>
-                <span className="pos-icon">{POS_ICON[pos]}</span>
-                <span className="pos-nombre">{pos}</span>
-                <div className="pos-pips">
-                  {Array.from({ length: necesita }).map((_, i) => (
-                    <span key={i} className={`pip ${i < tiene ? 'lleno' : ''}`} />
+      {msg && !showForm && <div className="page-msg">{msg}</div>}
+
+      {/* LISTA DE JUGADORES - Principal */}
+      <div className="plantilla-lista">
+        <div className="lista-header">
+          <h2>📋 Jugadores Registrados ({jugadores.length})</h2>
+          {jugadores.length > 0 && (
+            <div className="lista-acciones">
+              <button className="btn-primary-small" onClick={() => openForm()}>+ Añadir</button>
+            </div>
+          )}
+        </div>
+        
+        {jugadores.length === 0 ? (
+          <div className="empty-plantilla">
+            <p>No hay jugadores aún.</p>
+            <button className="btn-primary" onClick={() => openForm()}>+ Añadir primer jugador</button>
+          </div>
+        ) : (
+          <>
+            {POSICIONES_LIST.map((pos) => {
+              const jug = jugadores.filter((j) => j.posicion === pos);
+              if (jug.length === 0) return null;
+              return (
+                <div key={pos} className="pos-grupo">
+                  <div className="pos-grupo-title">{POS_ICON[pos]} {pos} <span className="pos-grupo-count">{jug.length}/{CUPO[pos]}</span></div>
+                  {jug.map((j) => (
+                    <div key={j.id} className="jugador-row">
+                      <span className="jrow-num">{j.numeroCamiseta || '—'}</span>
+                      <span className="jrow-nombre">{j.nombre} {j.apellido}</span>
+                      <div className="jrow-stats">
+                        <span title="Goles">⚽ {j.goles || 0}</span>
+                        <span title="Amarillas">🟡 {j.tarjetasAmarillas || 0}</span>
+                        <span title="Rojas">🔴 {j.tarjetasRojas || 0}</span>
+                      </div>
+                      <div className="jrow-actions">
+                        <button onClick={() => startEdit(j)} title="Editar">✏️</button>
+                        <button onClick={() => remove(j.id)} title="Eliminar">🗑️</button>
+                      </div>
+                    </div>
                   ))}
                 </div>
-                <span className="pos-count">{tiene}/{necesita}</span>
-                {!completo && <span className="pos-add">+</span>}
+              );
+            })}
+            {sinPosicion > 0 && (
+              <div className="pos-grupo">
+                <div className="pos-grupo-title warn">⚠️ Sin posición asignada <span className="pos-grupo-count">{sinPosicion}</span></div>
+                {jugadores.filter((j) => !j.posicion).map((j) => (
+                  <div key={j.id} className="jugador-row warn">
+                    <span className="jrow-num">{j.numeroCamiseta || '—'}</span>
+                    <span className="jrow-nombre">{j.nombre} {j.apellido}</span>
+                    <div className="jrow-stats">
+                      <span title="Goles">⚽ {j.goles || 0}</span>
+                      <span title="Amarillas">🟡 {j.tarjetasAmarillas || 0}</span>
+                      <span title="Rojas">🔴 {j.tarjetasRojas || 0}</span>
+                    </div>
+                    <div className="jrow-actions">
+                      <button onClick={() => startEdit(j)} title="Editar">✏️</button>
+                      <button onClick={() => remove(j.id)} title="Eliminar">🗑️</button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            );
-          })}
-        </div>
-      )}
+            )}
+          </>
+        )}
+      </div>
 
       {/* Formulario */}
       {showForm && (
@@ -225,58 +270,30 @@ const MiEquipo = () => {
         </div>
       )}
 
-      {msg && !showForm && <div className="page-msg">{msg}</div>}
-
-      {/* Plantilla por posición */}
-      {!loadingData && (
-        <div className="plantilla-lista">
-          <h2>Plantilla ({jugadores.length} jugadores)</h2>
-          {jugadores.length === 0 ? (
-            <div className="empty-plantilla">
-              <p>No hay jugadores aún.</p>
-              <button className="btn-primary" onClick={() => openForm()}>+ Añadir primer jugador</button>
-            </div>
-          ) : (
-            POSICIONES_LIST.map((pos) => {
-              const jug = jugadores.filter((j) => j.posicion === pos);
-              if (jug.length === 0) return null;
+      {/* Grid de posiciones visual */}
+      {!loadingData && jugadores.length > 0 && (
+        <div className="posiciones-seccion">
+          <h3 className="seccion-titulo"> Resumen por Posición</h3>
+          <div className="posiciones-grid">
+            {POSICIONES_LIST.map((pos) => {
+              const tiene = conteo[pos];
+              const necesita = CUPO[pos];
+              const completo = tiene >= necesita;
               return (
-                <div key={pos} className="pos-grupo">
-                  <div className="pos-grupo-title">{POS_ICON[pos]} {pos} <span className="pos-grupo-count">{jug.length}/{CUPO[pos]}</span></div>
-                  {jug.map((j) => (
-                    <div key={j.id} className="jugador-row">
-                      <span className="jrow-num">{j.numeroCamiseta || '—'}</span>
-                      <span className="jrow-nombre">{j.nombre} {j.apellido}</span>
-                      <div className="jrow-stats">
-                        <span title="Goles">⚽ {j.goles || 0}</span>
-                        <span title="Amarillas">🟡 {j.tarjetasAmarillas || 0}</span>
-                        <span title="Rojas">🔴 {j.tarjetasRojas || 0}</span>
-                      </div>
-                      <div className="jrow-actions">
-                        <button onClick={() => startEdit(j)}>✏️</button>
-                        <button onClick={() => remove(j.id)}>🗑️</button>
-                      </div>
-                    </div>
-                  ))}
+                <div key={pos} className={`pos-slot ${completo ? 'completo' : 'falta'}`} onClick={() => openForm(pos)}>
+                  <span className="pos-icon">{POS_ICON[pos]}</span>
+                  <span className="pos-nombre">{pos}</span>
+                  <div className="pos-pips">
+                    {Array.from({ length: necesita }).map((_, i) => (
+                      <span key={i} className={`pip ${i < tiene ? 'lleno' : ''}`} />
+                    ))}
+                  </div>
+                  <span className="pos-count">{tiene}/{necesita}</span>
+                  {!completo && <span className="pos-add">+</span>}
                 </div>
               );
-            })
-          )}
-          {sinPosicion > 0 && (
-            <div className="pos-grupo">
-              <div className="pos-grupo-title warn">⚠️ Sin posición asignada <span className="pos-grupo-count">{sinPosicion}</span></div>
-              {jugadores.filter((j) => !j.posicion).map((j) => (
-                <div key={j.id} className="jugador-row warn">
-                  <span className="jrow-num">{j.numeroCamiseta || '—'}</span>
-                  <span className="jrow-nombre">{j.nombre} {j.apellido}</span>
-                  <div className="jrow-actions">
-                    <button onClick={() => startEdit(j)}>✏️</button>
-                    <button onClick={() => remove(j.id)}>🗑️</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+            })}
+          </div>
         </div>
       )}
     </div>

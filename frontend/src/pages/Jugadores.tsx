@@ -4,10 +4,13 @@ import { getEquipos } from '../firebase/equipos';
 import { Jugador, Equipo } from '../types';
 import './Jugadores.css';
 
+const GRUPOS = ['Grupo A', 'Grupo B', 'Grupo C', 'Grupo D'];
+
 const Jugadores = () => {
   const [jugadores, setJugadores] = useState<Jugador[]>([]);
   const [equipos, setEquipos] = useState<Equipo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filtroGrupo, setFiltroGrupo] = useState('');
   const [filtroEquipo, setFiltroEquipo] = useState('');
 
   useEffect(() => { load(); }, []);
@@ -21,9 +24,23 @@ const Jugadores = () => {
 
   const equipoNombre = (id: string) => equipos.find((e) => e.id === id)?.nombre || '—';
 
+  // Filtrar equipos por grupo
+  const equiposFiltrados = filtroGrupo
+    ? filtroGrupo === 'Sin Grupo'
+      ? equipos.filter((e) => !e.grupo)
+      : equipos.filter((e) => e.grupo === filtroGrupo)
+    : equipos;
+
+  // Filtrar jugadores por equipo
   const jugadoresFiltrados = filtroEquipo
     ? jugadores.filter((j) => j.equipoId === filtroEquipo)
     : jugadores;
+
+  // Cuando cambia el grupo, resetear el filtro de equipo
+  const handleGrupoChange = (nuevoGrupo: string) => {
+    setFiltroGrupo(nuevoGrupo);
+    setFiltroEquipo(''); // Resetear equipo al cambiar grupo
+  };
 
   if (loading) return <div className="loading">Cargando jugadores...</div>;
 
@@ -34,10 +51,32 @@ const Jugadores = () => {
       </div>
 
       <div className="filtros">
-        <select value={filtroEquipo} onChange={(e) => setFiltroEquipo(e.target.value)}>
-          <option value="">Todos los equipos</option>
-          {equipos.map((eq) => <option key={eq.id} value={eq.id}>{eq.nombre}</option>)}
-        </select>
+        <div className="filtro-item">
+          <label>Filtrar por Grupo:</label>
+          <select value={filtroGrupo} onChange={(e) => handleGrupoChange(e.target.value)}>
+            <option value="">Todos los grupos</option>
+            {GRUPOS.map((g) => (
+              <option key={g} value={g}>{g}</option>
+            ))}
+            <option value="Sin Grupo">Sin Grupo</option>
+          </select>
+        </div>
+
+        <div className="filtro-item">
+          <label>Filtrar por Equipo:</label>
+          <select 
+            value={filtroEquipo} 
+            onChange={(e) => setFiltroEquipo(e.target.value)}
+            disabled={equiposFiltrados.length === 0}
+          >
+            <option value="">
+              {filtroGrupo ? 'Todos los equipos del grupo' : 'Todos los equipos'}
+            </option>
+            {equiposFiltrados.map((eq) => (
+              <option key={eq.id} value={eq.id}>{eq.nombre}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="jugadores-table-wrap">
