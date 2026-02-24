@@ -66,9 +66,21 @@ export const updateResultado = async (
   id: string,
   golesLocal: number,
   golesVisitante: number,
-  finalizado: boolean
+  finalizado: boolean,
+  goleadores?: Array<{ jugadorId: string; cantidad: number }>,
+  tarjetasAmarillas?: string[],
+  tarjetasRojas?: string[]
 ): Promise<void> => {
-  await updateDoc(doc(db, COLLECTION, id), { golesLocal, golesVisitante, finalizado });
+  const updateData: any = { 
+    golesLocal, 
+    golesVisitante, 
+    finalizado,
+    goleadores: goleadores || [],
+    tarjetasAmarillas: tarjetasAmarillas || [],
+    tarjetasRojas: tarjetasRojas || []
+  };
+  
+  await updateDoc(doc(db, COLLECTION, id), updateData);
 };
 
 export const deletePartido = async (id: string): Promise<void> => {

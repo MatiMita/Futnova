@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Equipo } from '../types';
+import { Equipo, Jugador } from '../types';
 import { getEquipos, deleteEquipo } from '../firebase/equipos';
+import { getJugadoresByEquipo } from '../firebase/jugadores';
 import { useAuth } from '../context/AuthContext';
 import './Equipos.css';
 
@@ -12,6 +13,9 @@ const Equipos = () => {
   const [equipos, setEquipos] = useState<Equipo[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [equipoSeleccionado, setEquipoSeleccionado] = useState<Equipo | null>(null);
+  const [jugadoresModal, setJugadoresModal] = useState<Jugador[]>([]);
 
   useEffect(() => {
     loadEquipos();
@@ -60,6 +64,24 @@ const Equipos = () => {
     }
   };
 
+  const abrirModal = async (equipo: Equipo) => {
+    setEquipoSeleccionado(equipo);
+    setModalAbierto(true);
+    try {
+      const jugadores = await getJugadoresByEquipo(equipo.id);
+      setJugadoresModal(jugadores);
+    } catch (error) {
+      console.error('Error al cargar jugadores:', error);
+      setJugadoresModal([]);
+    }
+  };
+
+  const cerrarModal = () => {
+    setModalAbierto(false);
+    setEquipoSeleccionado(null);
+    setJugadoresModal([]);
+  };
+
   if (loading) return <div className="loading">Cargando equipos...</div>;
 
   const grupos = agruparPorGrupo();
@@ -90,12 +112,24 @@ const Equipos = () => {
                 <div className="equipos-grid">
                   {equiposGrupo.map((equipo) => (
                     <div key={equipo.id} className="equipo-card">
-                      <div className="equipo-header">
+                      <div 
+                        className="equipo-header" 
+                        onClick={() => abrirModal(equipo)}
+                        style={{ cursor: 'pointer' }}
+                      >
                         {equipo.logo && <img src={equipo.logo} alt={equipo.nombre} />}
                         <h3>{equipo.nombre}</h3>
+                        <span className="expand-icon"></span>
                       </div>
+                      
                       {isAdmin && (
-                        <button onClick={() => handleDelete(equipo.id)} className="btn-delete">
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(equipo.id);
+                          }} 
+                          className="btn-delete"
+                        >
                           Eliminar
                         </button>
                       )}
@@ -105,6 +139,42 @@ const Equipos = () => {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Modal de jugadores */}
+      {modalAbierto && equipoSeleccionado && (
+        <div className="modal-overlay" onClick={cerrarModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              {equipoSeleccionado.logo && (
+                <img src={equipoSeleccionado.logo} alt={equipoSeleccionado.nombre} className="modal-logo" />
+              )}
+              <h2>{equipoSeleccionado.nombre} - Plantel</h2>
+              <button className="btn-cerrar" onClick={cerrarModal}>✕</button>
+            </div>
+            <div className="modal-body">
+              {jugadoresModal.length === 0 ? (
+                <p className="no-jugadores">No hay jugadores registrados</p>
+              ) : (
+                <div className="jugadores-container">
+                  {jugadoresModal.map((jugador) => (
+                    <div key={jugador.id} className="jugador-item">
+                      {jugador.numeroCamiseta && (
+                        <span className="numero-camiseta">{jugador.numeroCamiseta}</span>
+                      )}
+                      <div className="jugador-info">
+                        <span className="jugador-nombre">{jugador.nombre} {jugador.apellido}</span>
+                        {jugador.posicion && (
+                          <span className="jugador-posicion">{jugador.posicion}</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

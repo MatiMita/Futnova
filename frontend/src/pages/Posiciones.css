@@ -142,3 +142,109 @@
   margin-top: 2rem;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
 }
+
+/* =====================
+   RESPONSIVE DESIGN
+   ===================== */
+@media (max-width: 1200px) {
+  .posiciones-page {
+    padding: 2.5rem 1.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .posiciones-page h1 {
+    font-size: 2.4rem;
+  }
+  
+  .grupo-title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .posiciones-page {
+    padding: 2rem 1rem;
+  }
+  
+  .posiciones-page h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .grupo-title {
+    font-size: 1.4rem;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .posiciones-table {
+    min-width: 600px;
+  }
+  
+  .posiciones-table th,
+  .posiciones-table td {
+    padding: 1rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .equipo-cell img {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .pos-number {
+    font-size: 1rem;
+  }
+  
+  .puntos {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .posiciones-page {
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .posiciones-page h1 {
+    font-size: 1.6rem;
+    padding-bottom: 1rem;
+  }
+  
+  .grupos-wrapper {
+    gap: 2rem;
+  }
+  
+  .grupo-title {
+    font-size: 1.2rem;
+    padding-left: 0.75rem;
+  }
+  
+  .posiciones-table {
+    min-width: 550px;
+    font-size: 0.8rem;
+  }
+  
+  .posiciones-table th,
+  .posiciones-table td {
+    padding: 0.75rem 0.4rem;
+  }
+  
+  .equipo-cell {
+    gap: 0.5rem;
+  }
+  
+  .equipo-cell img {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .empty-state,
+  .loading {
+    padding: 2rem;
+    font-size: 1.1rem;
+  }
+}

@@ -625,9 +625,184 @@
 .loading { text-align: center; padding: 4rem; color: #666; }
 
 /* ===================== RESPONSIVE ===================== */
+@media (max-width: 992px) {
+  .mi-equipo-page {
+    max-width: 100%;
+    padding: 0 1.25rem 4rem;
+  }
+  
+  .posiciones-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .mi-equipo-page {
+    margin: 1.5rem auto;
+    padding: 0 1rem 3rem;
+  }
+  
+  .equipo-header {
+    flex-wrap: wrap;
+    padding: 1rem 1.25rem;
+  }
+  
+  .equipo-logo {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .equipo-header-info h1 {
+    font-size: 1.4rem;
+  }
+  
+  .btn-add-main {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .plantilla-progreso {
+    padding: 1rem 1.2rem;
+  }
+  
+  .progreso-nums {
+    font-size: 1.2rem;
+  }
+  
+  .posiciones-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+  
+  .pos-slot {
+    padding: 0.7rem 0.6rem;
+  }
+  
+  .pos-icon {
+    font-size: 1.2rem;
+  }
+  
+  .modal-content {
+    width: 95%;
+    padding: 1rem;
+  }
+  
+  .jrow-stats {
+    display: none;
+  }
+}
+
 @media (max-width: 600px) {
-  .equipo-header { flex-wrap: wrap; }
-  .btn-add-main { width: 100%; text-align: center; }
-  .posiciones-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-  .jrow-stats { display: none; }
+  .mi-equipo-page {
+    margin: 1rem auto;
+    padding: 0 0.75rem 2rem;
+  }
+  
+  .equipo-header {
+    padding: 0.85rem 1rem;
+    gap: 1rem;
+  }
+  
+  .equipo-logo {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .equipo-header-info h1 {
+    font-size: 1.2rem;
+  }
+  
+  .header-badges {
+    gap: 0.4rem;
+  }
+  
+  .grupo-badge,
+  .capitan-badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.6rem;
+  }
+  
+  .btn-add-main {
+    padding: 0.55rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .plantilla-progreso {
+    padding: 0.85rem 1rem;
+  }
+  
+  .progreso-titulo {
+    font-size: 0.8rem;
+  }
+  
+  .progreso-nums {
+    font-size: 1.1rem;
+  }
+  
+  .progreso-total {
+    font-size: 0.8rem;
+  }
+  
+  .progreso-detail {
+    font-size: 0.78rem;
+    gap: 0.75rem;
+  }
+  
+  .seccion-titulo {
+    font-size: 1rem;
+  }
+  
+  .posiciones-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .pos-slot {
+    padding: 0.6rem 0.5rem;
+  }
+  
+  .pos-icon {
+    font-size: 1.1rem;
+  }
+  
+  .pos-texto {
+    font-size: 0.7rem;
+  }
+  
+  .jugador-row {
+    padding: 0.7rem 0.85rem;
+  }
+  
+  .jrow-num {
+    font-size: 0.85rem;
+  }
+  
+  .jrow-nombre {
+    font-size: 0.85rem;
+  }
+  
+  .jrow-pos {
+    font-size: 0.7rem;
+  }
+  
+  .jrow-actions button {
+    width: 26px;
+    height: 26px;
+    font-size: 0.75rem;
+  }
+  
+  .modal-content {
+    padding: 0.85rem;
+  }
+  
+  .modal-header h2 {
+    font-size: 1rem;
+  }
+  
+  .no-equipo-msg {
+    padding: 3rem 1.5rem;
+  }
+  
+  .no-equipo-msg span {
+    font-size: 2.5rem;
+  }
 }

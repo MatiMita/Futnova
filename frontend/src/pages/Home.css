@@ -382,9 +382,44 @@
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .hero h1 {
+    font-size: 4rem;
+  }
+  
+  .tournament-logo {
+    width: 300px;
+    height: 180px;
+  }
+  
+  .section-title {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero {
+    padding: 80px 20px;
+  }
+  
+  .hero h1 {
+    font-size: 3.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+  }
+}
+
 @media (max-width: 768px) {
   .hero h1 {
     font-size: 3rem;
+    letter-spacing: 2px;
   }
 
   .tournament-logo {
@@ -405,6 +440,8 @@
   .btn {
     width: 100%;
     max-width: 300px;
+    padding: 15px 30px;
+    font-size: 1.1rem;
   }
 
   .section-title {
@@ -418,27 +455,90 @@
   .info-grid {
     grid-template-columns: 1fr;
   }
+  
+  .info-card {
+    padding: 30px;
+  }
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
+  
+  .stats {
+    padding: 60px 20px;
+  }
+  
+  .info-section {
+    padding: 60px 20px;
+  }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 576px) {
   .hero {
-    padding: 60px 15px;
+    padding: 50px 15px;
   }
 
   .hero h1 {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
   }
 
   .hero-subtitle {
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+  }
+  
+  .tournament-flag {
+    font-size: 3rem;
+  }
+  
+  .tournament-logo {
+    width: 200px;
+    height: 120px;
+    margin: 30px auto;
+  }
+  
+  .btn {
+    padding: 12px 25px;
     font-size: 1rem;
   }
 
   .stats-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .stat-card {
+    padding: 30px 15px;
+  }
+  
+  .stat-number {
+    font-size: 2.5rem;
+  }
+  
+  .stat-label {
+    font-size: 0.9rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 40px;
+  }
+  
+  .info-card {
+    padding: 25px;
+  }
+  
+  .info-icon {
+    font-size: 2.5rem;
+  }
+  
+  .info-card h3 {
+    font-size: 1.5rem;
+  }
+  
+  .info-card p {
+    font-size: 0.95rem;
   }
 }

@@ -153,3 +153,69 @@
 .btn-guest:hover {
   color: #aaa;
 }
+
+/* =====================
+   RESPONSIVE DESIGN
+   ===================== */
+@media (max-width: 768px) {
+  .login-page {
+    padding: 1.5rem;
+  }
+  
+  .login-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .login-logo {
+    font-size: 2.5rem;
+  }
+  
+  .login-card h1 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .login-page {
+    padding: 1rem;
+    min-height: 70vh;
+  }
+  
+  .login-card {
+    padding: 1.5rem 1.25rem;
+    max-width: 100%;
+  }
+  
+  .login-logo {
+    font-size: 2rem;
+  }
+  
+  .login-card h1 {
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+  }
+  
+  .login-subtitle {
+    font-size: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .login-tabs .tab {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+  
+  .form-group label {
+    font-size: 0.8rem;
+  }
+  
+  .form-group input {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.9rem;
+  }
+  
+  .btn-login {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+}

@@ -15,3 +15,33 @@
 .equipo-info img { width: 24px; height: 24px; object-fit: cover; border-radius: 3px; }
 .goles-cell { font-family: 'Bebas Neue','Impact',sans-serif; font-size: 1.4rem; color: #00ff88; text-align: center; }
 .empty-state { color: #666; text-align: center; padding: 3rem; }
+
+/* =====================
+   RESPONSIVE DESIGN
+   ===================== */
+@media (max-width: 992px) {
+  .goleadores-page { padding: 1.5rem; max-width: 800px; }
+}
+
+@media (max-width: 768px) {
+  .goleadores-page { padding: 1.25rem; }
+  .goleadores-page h1 { font-size: 1.6rem; margin-bottom: 1.25rem; }
+  .goleadores-table { font-size: 0.8rem; }
+  .goleadores-table th { padding: 0.5rem 0.6rem; font-size: 0.7rem; }
+  .goleadores-table td { padding: 0.6rem 0.6rem; }
+  .goles-cell { font-size: 1.2rem; }
+  .jugador-info { gap: 0.4rem; }
+  .equipo-info img { width: 20px; height: 20px; }
+  .num-badge { padding: 0.08rem 0.35rem; font-size: 0.68rem; }
+}
+
+@media (max-width: 576px) {
+  .goleadores-page { padding: 1rem; }
+  .goleadores-page h1 { font-size: 1.4rem; }
+  .goleadores-table { font-size: 0.75rem; }
+  .goleadores-table th { padding: 0.4rem 0.5rem; }
+  .goleadores-table td { padding: 0.5rem 0.5rem; }
+  .pos-cell { font-size: 0.9rem; }
+  .goles-cell { font-size: 1.1rem; }
+  .equipo-info img { width: 18px; height: 18px; }
+}

@@ -35,6 +35,12 @@ const Admin = () => {
   const [partidoForm, setPartidoForm] = useState({ equipoLocalId: '', equipoVisitanteId: '', fecha: '', jornada: '' });
   const [partidoMsg, setPartidoMsg] = useState('');
   const [resultadoForm, setResultadoForm] = useState<Record<string, { golesLocal: string; golesVisitante: string; finalizado: boolean }>>({});
+  const [partidoDetalles, setPartidoDetalles] = useState<Record<string, { 
+    goleadores: Array<{ jugadorId: string; cantidad: number }>;
+    tarjetasAmarillas: string[];
+    tarjetasRojas: string[];
+  }>>({});
+  const [partidosExpandidos, setPartidosExpandidos] = useState<Record<string, boolean>>({});
 
   const [usuarioForm, setUsuarioForm] = useState({ email: '', password: '', nombre: '', equipoId: '' });
   const [usuarioMsg, setUsuarioMsg] = useState('');
@@ -47,8 +53,17 @@ const Admin = () => {
     setJugadores(j);
     setPartidos(p);
     const res: typeof resultadoForm = {};
-    p.forEach((pt) => { res[pt.id] = { golesLocal: String(pt.golesLocal), golesVisitante: String(pt.golesVisitante), finalizado: pt.finalizado }; });
+    const det: typeof partidoDetalles = {};
+    p.forEach((pt) => { 
+      res[pt.id] = { golesLocal: String(pt.golesLocal), golesVisitante: String(pt.golesVisitante), finalizado: pt.finalizado };
+      det[pt.id] = {
+        goleadores: pt.goleadores || [],
+        tarjetasAmarillas: pt.tarjetasAmarillas || [],
+        tarjetasRojas: pt.tarjetasRojas || []
+      };
+    });
     setResultadoForm(res);
+    setPartidoDetalles(det);
   };
 
   const flash = (setter: (s: string) => void, text: string) => { setter(text); setTimeout(() => setter(''), 3000); };
@@ -119,11 +134,87 @@ const Admin = () => {
   };
   const saveResultado = async (partidoId: string) => {
     const r = resultadoForm[partidoId];
+    const d = partidoDetalles[partidoId];
     if (!r) return;
-    await updateResultado(partidoId, Number(r.golesLocal), Number(r.golesVisitante), r.finalizado);
-    flash(setPartidoMsg, ' Resultado guardado');
+    await updateResultado(
+      partidoId, 
+      Number(r.golesLocal), 
+      Number(r.golesVisitante), 
+      r.finalizado,
+      d?.goleadores,
+      d?.tarjetasAmarillas,
+      d?.tarjetasRojas
+    );
+    flash(setPartidoMsg, '✅ Resultado guardado');
     loadAll();
   };
+
+  const agregarGoleador = (partidoId: string, jugadorId: string) => {
+    if (!jugadorId) return;
+    setPartidoDetalles((prev) => {
+      const current = prev[partidoId] || { goleadores: [], tarjetasAmarillas: [], tarjetasRojas: [] };
+      const existenteIndex = current.goleadores.findIndex((g) => g.jugadorId === jugadorId);
+      
+      if (existenteIndex !== -1) {
+        // Crear una nueva copia del array con el goleador actualizado
+        const nuevosGoleadores = current.goleadores.map((g, idx) => 
+          idx === existenteIndex ? { ...g, cantidad: g.cantidad + 1 } : g
+        );
+        return { ...prev, [partidoId]: { ...current, goleadores: nuevosGoleadores } };
+      }
+      
+      // Agregar nuevo goleador
+      return { ...prev, [partidoId]: { ...current, goleadores: [...current.goleadores, { jugadorId, cantidad: 1 }] } };
+    });
+  };
+
+  const quitarGoleador = (partidoId: string, jugadorId: string) => {
+    setPartidoDetalles((prev) => {
+      const current = prev[partidoId] || { goleadores: [], tarjetasAmarillas: [], tarjetasRojas: [] };
+      const existenteIndex = current.goleadores.findIndex((g) => g.jugadorId === jugadorId);
+      
+      if (existenteIndex !== -1) {
+        const goleador = current.goleadores[existenteIndex];
+        if (goleador.cantidad > 1) {
+          // Decrementar la cantidad
+          const nuevosGoleadores = current.goleadores.map((g, idx) => 
+            idx === existenteIndex ? { ...g, cantidad: g.cantidad - 1 } : g
+          );
+          return { ...prev, [partidoId]: { ...current, goleadores: nuevosGoleadores } };
+        } else {
+          // Eliminar el goleador si la cantidad es 1
+          return { ...prev, [partidoId]: { ...current, goleadores: current.goleadores.filter((g) => g.jugadorId !== jugadorId) } };
+        }
+      }
+      
+      return prev;
+    });
+  };
+
+  const toggleTarjeta = (partidoId: string, jugadorId: string, tipo: 'amarilla' | 'roja') => {
+    if (!jugadorId) return;
+    setPartidoDetalles((prev) => {
+      const current = prev[partidoId] || { goleadores: [], tarjetasAmarillas: [], tarjetasRojas: [] };
+      const key = tipo === 'amarilla' ? 'tarjetasAmarillas' : 'tarjetasRojas';
+      const lista = current[key];
+      const existe = lista.includes(jugadorId);
+      return {
+        ...prev,
+        [partidoId]: {
+          ...current,
+          [key]: existe ? lista.filter((id) => id !== jugadorId) : [...lista, jugadorId]
+        }
+      };
+    });
+  };
+
+  const togglePartidoExpandido = (partidoId: string) => {
+    setPartidosExpandidos((prev) => ({
+      ...prev,
+      [partidoId]: !prev[partidoId]
+    }));
+  };
+
   const removePartido = async (id: string) => { if (!confirm('¿Eliminar partido?')) return; await deletePartido(id); flash(setPartidoMsg, '🗑 Eliminado'); loadAll(); };
 
   // ---- USUARIOS ----
@@ -300,29 +391,198 @@ const Admin = () => {
           </form>
           {partidoMsg && <div className="admin-msg">{partidoMsg}</div>}
           <div className="partidos-list">
-            {partidos.map((p) => (
-              <div key={p.id} className={`partido-admin-card ${p.finalizado ? 'finalizado' : ''}`}>
-                <div className="partido-info">
-                  <span className="jornada-badge">J{p.jornada}</span>
-                  <span>{equipoNombre(p.equipoLocalId)}</span>
-                  <span className="vs">VS</span>
-                  <span>{equipoNombre(p.equipoVisitanteId)}</span>
-                  <span className="fecha-text">{new Date(p.fecha).toLocaleDateString('es')}</span>
-                  {p.finalizado && <span className="fin-badge">✓ Final</span>}
+            {partidos.map((p) => {
+              const jugadoresLocal = jugadores.filter((j) => j.equipoId === p.equipoLocalId);
+              const jugadoresVisitante = jugadores.filter((j) => j.equipoId === p.equipoVisitanteId);
+              const detalle = partidoDetalles[p.id] || { goleadores: [], tarjetasAmarillas: [], tarjetasRojas: [] };
+              
+              return (
+                <div key={p.id} className={`partido-admin-card ${p.finalizado ? 'finalizado' : ''}`}>
+                  <div className="partido-info">
+                    <span className="jornada-badge">J{p.jornada}</span>
+                    <span>{equipoNombre(p.equipoLocalId)}</span>
+                    <span className="vs">VS</span>
+                    <span>{equipoNombre(p.equipoVisitanteId)}</span>
+                    <span className="fecha-text">{new Date(p.fecha).toLocaleDateString('es')}</span>
+                    {p.finalizado && <span className="fin-badge">✓ Final</span>}
+                  </div>
+                  
+                  <div className="resultado-ctrl">
+                    <input type="number" min={0} style={{ width: 52 }} value={resultadoForm[p.id]?.golesLocal ?? p.golesLocal} onChange={(e) => setResultadoForm({ ...resultadoForm, [p.id]: { ...resultadoForm[p.id], golesLocal: e.target.value } })} />
+                    <span style={{ color: '#aaa' }}>—</span>
+                    <input type="number" min={0} style={{ width: 52 }} value={resultadoForm[p.id]?.golesVisitante ?? p.golesVisitante} onChange={(e) => setResultadoForm({ ...resultadoForm, [p.id]: { ...resultadoForm[p.id], golesVisitante: e.target.value } })} />
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.8rem', color: '#aaa', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={resultadoForm[p.id]?.finalizado ?? p.finalizado} onChange={(e) => setResultadoForm({ ...resultadoForm, [p.id]: { ...resultadoForm[p.id], finalizado: e.target.checked } })} />
+                      Final
+                    </label>
+                    <button className="btn-primary" style={{ padding: '0.3rem 0.7rem', fontSize: '0.8rem' }} onClick={() => saveResultado(p.id)}>Guardar</button>
+                    <button className="btn-delete" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }} onClick={() => removePartido(p.id)}>✕</button>
+                    <button 
+                      className="btn-toggle-detalles" 
+                      onClick={() => togglePartidoExpandido(p.id)}
+                      title={partidosExpandidos[p.id] ? "Ocultar detalles" : "Mostrar detalles"}
+                    >
+                      {partidosExpandidos[p.id] ? '▼' : '▶'}
+                    </button>
+                  </div>
+
+                  {/* Sección de Goleadores y Tarjetas */}
+                  {partidosExpandidos[p.id] && (
+                  <div className="partido-detalles">
+                    {/* GOLEADORES */}
+                    <div className="detalle-seccion">
+                      <h4>⚽ Goleadores</h4>
+                      <div className="equipos-container">
+                        {/* Equipo Local */}
+                        <div className="equipo-lista">
+                          <h5 className="equipo-titulo">{equipoNombre(p.equipoLocalId)}</h5>
+                          <div className="jugadores-columna">
+                            {jugadoresLocal.map((j) => {
+                              const gol = detalle.goleadores.find((g) => g.jugadorId === j.id);
+                              const cantidad = gol?.cantidad || 0;
+                              return (
+                                <div key={j.id} className="jugador-selector">
+                                  <span className="jugador-nombre">
+                                    {j.numeroCamiseta && <span className="num-mini">{j.numeroCamiseta}</span>}
+                                    {j.nombre} {j.apellido}
+                                  </span>
+                                  <div className="contador-goles">
+                                    {cantidad > 0 && (
+                                      <>
+                                        <button className="btn-mini" onClick={() => quitarGoleador(p.id, j.id)}>−</button>
+                                        <span className="cantidad-badge">{cantidad}</span>
+                                      </>
+                                    )}
+                                    <button className="btn-mini add" onClick={() => agregarGoleador(p.id, j.id)}>+</button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Equipo Visitante */}
+                        <div className="equipo-lista">
+                          <h5 className="equipo-titulo">{equipoNombre(p.equipoVisitanteId)}</h5>
+                          <div className="jugadores-columna">
+                            {jugadoresVisitante.map((j) => {
+                              const gol = detalle.goleadores.find((g) => g.jugadorId === j.id);
+                              const cantidad = gol?.cantidad || 0;
+                              return (
+                                <div key={j.id} className="jugador-selector">
+                                  <span className="jugador-nombre">
+                                    {j.numeroCamiseta && <span className="num-mini">{j.numeroCamiseta}</span>}
+                                    {j.nombre} {j.apellido}
+                                  </span>
+                                  <div className="contador-goles">
+                                    {cantidad > 0 && (
+                                      <>
+                                        <button className="btn-mini" onClick={() => quitarGoleador(p.id, j.id)}>−</button>
+                                        <span className="cantidad-badge">{cantidad}</span>
+                                      </>
+                                    )}
+                                    <button className="btn-mini add" onClick={() => agregarGoleador(p.id, j.id)}>+</button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* TARJETAS AMARILLAS */}
+                    <div className="detalle-seccion">
+                      <h4>🟡 Tarjetas Amarillas</h4>
+                      <div className="equipos-container">
+                        {/* Equipo Local */}
+                        <div className="equipo-lista">
+                          <h5 className="equipo-titulo">{equipoNombre(p.equipoLocalId)}</h5>
+                          <div className="jugadores-columna">
+                            {jugadoresLocal.map((j) => {
+                              const tiene = detalle.tarjetasAmarillas.includes(j.id);
+                              return (
+                                <div key={j.id} className={`jugador-selector ${tiene ? 'seleccionado' : ''}`} onClick={() => toggleTarjeta(p.id, j.id, 'amarilla')}>
+                                  <span className="jugador-nombre">
+                                    {j.numeroCamiseta && <span className="num-mini">{j.numeroCamiseta}</span>}
+                                    {j.nombre} {j.apellido}
+                                  </span>
+                                  {tiene && <span className="check-icon">✓</span>}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Equipo Visitante */}
+                        <div className="equipo-lista">
+                          <h5 className="equipo-titulo">{equipoNombre(p.equipoVisitanteId)}</h5>
+                          <div className="jugadores-columna">
+                            {jugadoresVisitante.map((j) => {
+                              const tiene = detalle.tarjetasAmarillas.includes(j.id);
+                              return (
+                                <div key={j.id} className={`jugador-selector ${tiene ? 'seleccionado' : ''}`} onClick={() => toggleTarjeta(p.id, j.id, 'amarilla')}>
+                                  <span className="jugador-nombre">
+                                    {j.numeroCamiseta && <span className="num-mini">{j.numeroCamiseta}</span>}
+                                    {j.nombre} {j.apellido}
+                                  </span>
+                                  {tiene && <span className="check-icon">✓</span>}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* TARJETAS ROJAS */}
+                    <div className="detalle-seccion">
+                      <h4>🔴 Tarjetas Rojas</h4>
+                      <div className="equipos-container">
+                        {/* Equipo Local */}
+                        <div className="equipo-lista">
+                          <h5 className="equipo-titulo">{equipoNombre(p.equipoLocalId)}</h5>
+                          <div className="jugadores-columna">
+                            {jugadoresLocal.map((j) => {
+                              const tiene = detalle.tarjetasRojas.includes(j.id);
+                              return (
+                                <div key={j.id} className={`jugador-selector ${tiene ? 'seleccionado roja' : ''}`} onClick={() => toggleTarjeta(p.id, j.id, 'roja')}>
+                                  <span className="jugador-nombre">
+                                    {j.numeroCamiseta && <span className="num-mini">{j.numeroCamiseta}</span>}
+                                    {j.nombre} {j.apellido}
+                                  </span>
+                                  {tiene && <span className="check-icon">✓</span>}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Equipo Visitante */}
+                        <div className="equipo-lista">
+                          <h5 className="equipo-titulo">{equipoNombre(p.equipoVisitanteId)}</h5>
+                          <div className="jugadores-columna">
+                            {jugadoresVisitante.map((j) => {
+                              const tiene = detalle.tarjetasRojas.includes(j.id);
+                              return (
+                                <div key={j.id} className={`jugador-selector ${tiene ? 'seleccionado roja' : ''}`} onClick={() => toggleTarjeta(p.id, j.id, 'roja')}>
+                                  <span className="jugador-nombre">
+                                    {j.numeroCamiseta && <span className="num-mini">{j.numeroCamiseta}</span>}
+                                    {j.nombre} {j.apellido}
+                                  </span>
+                                  {tiene && <span className="check-icon">✓</span>}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  )}
                 </div>
-                <div className="resultado-ctrl">
-                  <input type="number" min={0} style={{ width: 52 }} value={resultadoForm[p.id]?.golesLocal ?? p.golesLocal} onChange={(e) => setResultadoForm({ ...resultadoForm, [p.id]: { ...resultadoForm[p.id], golesLocal: e.target.value } })} />
-                  <span style={{ color: '#aaa' }}>—</span>
-                  <input type="number" min={0} style={{ width: 52 }} value={resultadoForm[p.id]?.golesVisitante ?? p.golesVisitante} onChange={(e) => setResultadoForm({ ...resultadoForm, [p.id]: { ...resultadoForm[p.id], golesVisitante: e.target.value } })} />
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.8rem', color: '#aaa', cursor: 'pointer' }}>
-                    <input type="checkbox" checked={resultadoForm[p.id]?.finalizado ?? p.finalizado} onChange={(e) => setResultadoForm({ ...resultadoForm, [p.id]: { ...resultadoForm[p.id], finalizado: e.target.checked } })} />
-                    Final
-                  </label>
-                  <button className="btn-primary" style={{ padding: '0.3rem 0.7rem', fontSize: '0.8rem' }} onClick={() => saveResultado(p.id)}>Guardar</button>
-                  <button className="btn-delete" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }} onClick={() => removePartido(p.id)}>✕</button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

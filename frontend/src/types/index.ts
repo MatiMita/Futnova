@@ -43,6 +43,9 @@ export interface Partido {
   jornada: number;
   finalizado: boolean;
   fechaCreacion?: unknown;
+  goleadores?: Array<{ jugadorId: string; cantidad: number }>; // Registro de goleadores
+  tarjetasAmarillas?: string[]; // IDs de jugadores con tarjeta amarilla
+  tarjetasRojas?: string[]; // IDs de jugadores con tarjeta roja
 }
 
 export interface Posicion {

@@ -65,7 +65,28 @@ export const deleteJugador = async (id: string): Promise<void> => {
 
 export const getGoleadores = async (): Promise<Jugador[]> => {
   const jugadores = await getJugadores();
-  return jugadores
+  const { getPartidosFinalizados } = await import('./partidos');
+  const partidosFinalizados = await getPartidosFinalizados();
+  
+  // Calcular goles desde los partidos finalizados
+  const golesMap = new Map<string, number>();
+  
+  partidosFinalizados.forEach((partido) => {
+    if (partido.goleadores) {
+      partido.goleadores.forEach((gol) => {
+        const golesActuales = golesMap.get(gol.jugadorId) || 0;
+        golesMap.set(gol.jugadorId, golesActuales + gol.cantidad);
+      });
+    }
+  });
+  
+  // Actualizar el campo goles con los valores calculados
+  const jugadoresConGoles = jugadores.map((j) => ({
+    ...j,
+    goles: golesMap.get(j.id) || 0
+  }));
+  
+  return jugadoresConGoles
     .filter((j) => j.goles > 0)
     .sort((a, b) => b.goles - a.goles)
     .slice(0, 10);
@@ -73,7 +94,38 @@ export const getGoleadores = async (): Promise<Jugador[]> => {
 
 export const getTablaTargetas = async (): Promise<Jugador[]> => {
   const jugadores = await getJugadores();
-  return jugadores
+  const { getPartidosFinalizados } = await import('./partidos');
+  const partidosFinalizados = await getPartidosFinalizados();
+  
+  // Calcular tarjetas desde los partidos finalizados
+  const tarjetasMap = new Map<string, { amarillas: number; rojas: number }>();
+  
+  partidosFinalizados.forEach((partido) => {
+    if (partido.tarjetasAmarillas) {
+      partido.tarjetasAmarillas.forEach((jugadorId) => {
+        const actual = tarjetasMap.get(jugadorId) || { amarillas: 0, rojas: 0 };
+        tarjetasMap.set(jugadorId, { ...actual, amarillas: actual.amarillas + 1 });
+      });
+    }
+    if (partido.tarjetasRojas) {
+      partido.tarjetasRojas.forEach((jugadorId) => {
+        const actual = tarjetasMap.get(jugadorId) || { amarillas: 0, rojas: 0 };
+        tarjetasMap.set(jugadorId, { ...actual, rojas: actual.rojas + 1 });
+      });
+    }
+  });
+  
+  // Actualizar los campos de tarjetas con los valores calculados
+  const jugadoresConTarjetas = jugadores.map((j) => {
+    const tarjetas = tarjetasMap.get(j.id) || { amarillas: 0, rojas: 0 };
+    return {
+      ...j,
+      tarjetasAmarillas: tarjetas.amarillas,
+      tarjetasRojas: tarjetas.rojas
+    };
+  });
+  
+  return jugadoresConTarjetas
     .filter((j) => j.tarjetasAmarillas > 0 || j.tarjetasRojas > 0)
     .sort(
       (a, b) =>
