@@ -133,3 +133,55 @@ export const getTablaTargetas = async (): Promise<Jugador[]> => {
     )
     .slice(0, 10);
 };
+
+/**
+ * Obtiene la tabla de vallas menos vencidas (arqueros)
+ * Calcula los goles recibidos por cada arquero basándose en los partidos finalizados
+ */
+export const getVallasInvictas = async (): Promise<Jugador[]> => {
+  const jugadores = await getJugadores();
+  const { getPartidosFinalizados } = await import('./partidos');
+  const partidosFinalizados = await getPartidosFinalizados();
+  
+  // Filtrar solo arqueros
+  const arqueros = jugadores.filter(
+    (j) => j.posicion?.toLowerCase().includes('arquero') || 
+           j.posicion?.toLowerCase().includes('portero') ||
+           j.posicion?.toLowerCase().includes('goalkeeper')
+  );
+  
+  // Calcular goles recibidos por equipo desde los partidos finalizados
+  const golesRecibidosMap = new Map<string, { goles: number; partidos: number }>();
+  
+  partidosFinalizados.forEach((partido) => {
+    // Goles recibidos por el equipo local
+    const localData = golesRecibidosMap.get(partido.equipoLocalId) || { goles: 0, partidos: 0 };
+    golesRecibidosMap.set(partido.equipoLocalId, {
+      goles: localData.goles + partido.golesVisitante,
+      partidos: localData.partidos + 1
+    });
+    
+    // Goles recibidos por el equipo visitante
+    const visitanteData = golesRecibidosMap.get(partido.equipoVisitanteId) || { goles: 0, partidos: 0 };
+    golesRecibidosMap.set(partido.equipoVisitanteId, {
+      goles: visitanteData.goles + partido.golesLocal,
+      partidos: visitanteData.partidos + 1
+    });
+  });
+  
+  // Asignar goles recibidos a cada arquero
+  const arquerosConEstadisticas = arqueros.map((arquero) => {
+    const stats = golesRecibidosMap.get(arquero.equipoId) || { goles: 0, partidos: 0 };
+    return {
+      ...arquero,
+      golesRecibidos: stats.goles,
+      partidosJugados: stats.partidos
+    };
+  });
+  
+  // Filtrar arqueros que jugaron al menos 1 partido y ordenar ascendentemente por goles recibidos
+  return arquerosConEstadisticas
+    .filter((a) => (a.partidosJugados || 0) > 0)
+    .sort((a, b) => (a.golesRecibidos || 0) - (b.golesRecibidos || 0))
+    .slice(0, 10);
+};

@@ -1,6 +1,7 @@
 .tarjetas-page { padding: 2rem; max-width: 900px; margin: 0 auto; }
 .tarjetas-page h1 { font-family: 'Bebas Neue','Impact',sans-serif; font-size: 2rem; color: #ffc800; letter-spacing: 2px; margin-bottom: 1.5rem; }
-.tarjetas-table-wrap { overflow-x: auto; }
+.vallas-title { margin-top: 3rem; color: #4ecdc4 !important; }
+.tarjetas-table-wrap { overflow-x: auto; margin-bottom: 2rem; }
 .tarjetas-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .tarjetas-table th { padding: 0.6rem 0.8rem; text-align: left; color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid rgba(255,255,255,0.08); }
 .tarjetas-table td { padding: 0.75rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: #d0d8e8; vertical-align: middle; }
@@ -12,6 +13,9 @@
 .tarjeta-count.amarilla { background: rgba(255,200,0,0.15); color: #ffc800; border: 1px solid rgba(255,200,0,0.3); }
 .tarjeta-count.roja { background: rgba(255,68,68,0.15); color: #ff4444; border: 1px solid rgba(255,68,68,0.3); }
 .puntos-count { font-weight: 700; color: #ff8080; }
+.partidos-count { font-weight: 600; color: #888; }
+.goles-recibidos-count { font-weight: 700; color: #ff6b6b; padding: 0.2rem 0.7rem; background: rgba(255,107,107,0.15); border-radius: 4px; border: 1px solid rgba(255,107,107,0.3); display: inline-block; }
+.promedio-count { font-weight: 700; color: #4ecdc4; }
 .empty-state { color: #666; text-align: center; padding: 3rem; }
 
 /* =====================

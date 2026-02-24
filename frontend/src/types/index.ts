@@ -28,6 +28,7 @@ export interface Jugador {
   goles: number;
   tarjetasAmarillas: number;
   tarjetasRojas: number;
+  golesRecibidos?: number; // Para arqueros
   fechaRegistro?: unknown;
 }
 
